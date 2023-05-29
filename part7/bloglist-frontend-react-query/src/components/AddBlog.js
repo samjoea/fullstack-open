@@ -1,19 +1,40 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { createNewBlog } from '../app/reducers/blogReducer';
+import { addNewBlog } from '../services/blogs';
+import { useSetNotification } from '../context/NotificationContext';
 
 const AddBlog = () => {
-	const dispatch = useDispatch();
+	const queryClient = useQueryClient();
+	const setNotification = useSetNotification();
+
+	const blogData = useMutation({
+		mutationFn: addNewBlog,
+		onSuccess: (apiData) => {
+			const oldData = queryClient.getQueryData(['blogs']);
+			const newData = apiData?.data;
+			queryClient.setQueryData(['blogs'], [...oldData, newData]);
+			setNotification({
+				message: `a new blog ${apiData?.data?.title} was added`,
+				notificationType: 'success'
+			});
+		},
+		onError: (error) => {
+			setNotification({
+				message: error?.response?.data?.error,
+				notificationType: 'error'
+			});
+		}
+	});
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		const { title, author, url } = e.target.elements;
-		const inputData = {
+		const blog = {
 			title: title.value,
 			author: author.value,
 			url: url.value,
 		};
-		dispatch(createNewBlog(inputData));
+		blogData.mutate(blog);
 		e.target.reset();
 	};
 
@@ -51,7 +72,7 @@ const AddBlog = () => {
 						htmlFor="url">Url: </label>
 					<input
 						data-cy='blog-url'
-						type="url"
+						type="text"
 						name="url"
 						className='input'
 					/>
