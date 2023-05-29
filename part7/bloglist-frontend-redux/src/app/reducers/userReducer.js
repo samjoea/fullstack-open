@@ -14,10 +14,14 @@ const userSlice = createSlice({
 			localStorage.removeItem('user');
 			return null;
 		},
+		initializeUser(state, action) {
+			const user = JSON.parse(localStorage.getItem('user'));
+			return user;
+		}
 	},
 });
 
-export const { setUser, removeUser } = userSlice.actions;
+export const { setUser, removeUser, initializeUser } = userSlice.actions;
 
 export const logOut = () => {
 	return async (dispatch) => {

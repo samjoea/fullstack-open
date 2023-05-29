@@ -1,60 +1,51 @@
-import React, { useEffect, useRef } from 'react';
-import Blog from './components/Blog';
+import React, { useEffect } from 'react';
 import Notification from './components/Notification';
-import LoginForm from './components/LoginForm';
-import Togglable from './components/Togglable';
-import AddBlog from './components/AddBlog';
 import { useDispatch, useSelector } from 'react-redux';
 import { initializeBlogs } from './app/reducers/blogReducer';
-import { logOut } from './app/reducers/userReducer';
+import NavigationBar from './routes/header/NavigationBar';
+import { Route, Routes } from 'react-router-dom';
+import Login from './routes/auth/Login';
+import Blogs from './routes/blogs/Blogs';
+import BlogView from './routes/blogs/BlogView';
+import Users from './routes/user/Users';
+import User from './routes/user/User';
+import { setUsersAction } from './app/reducers/usersReducer';
+import { initializeUser } from './app/reducers/userReducer';
+import './index.css';
 
 const App = () => {
 	const dispatch = useDispatch();
-	const blogs = useSelector((state) => state.blogs);
-	const user = useSelector((state) => state.user);
-	const userToken = JSON.parse(localStorage.getItem('user'))?.token;
-	const componentRef = useRef();
+	const userToken = useSelector(state => state?.user?.token);
 
 	useEffect(() => {
 		dispatch(initializeBlogs());
+		dispatch(setUsersAction());
+		dispatch(initializeUser());
 	}, [dispatch]);
 
-	if (!userToken) {
-		return(
-			<div>
-				<div>Log in to application</div>
-				<Notification />
-				<LoginForm />
-			</div>
-		);
-	}
-
 	return (
-		<div>
-			<h1>blogs</h1>
-			<Notification />
-			<div>
-				{user?.name} logged in
-				<button
-					data-cy='log-out'
-					onClick={() => dispatch(logOut())}
-				>
-					logout
-				</button>
-			</div>
-			<br />
-			<div>
-				<Togglable ref={componentRef} buttonLable='create new blog' >
-					<AddBlog />
-				</Togglable>
-			</div>
-			<div data-cy='blog-posts'>
-				{blogs?.map(blog =>
-					<Blog
-						key={blog.id}
-						blog={blog}
-					/>
-				)}
+		<div className='w-full h-screen bg-purple-900 to-white bg-gradient-to-bl border grid place-content-center'>
+			<div className='border w-[40rem] box-border bg-gray-300  h-[40rem] overflow-hidden relative'>
+				<Notification />
+				{userToken && <NavigationBar />}
+				<div className='px-[3rem] pb-[3rem] h-full'>
+					<h1 className='my-[2rem] capitalize  w-full text-center text-3xl font-bold text-purple-900'>blog app</h1>
+					{
+						!userToken
+							? <Login />
+							: (
+								<>
+									<Routes>
+										<Route path='/' element={<Blogs />} />
+										<Route path='/blogs' element={<Blogs />} />
+										<Route path='/blogs/:id' element={<BlogView />} />
+										<Route path='/users' element={<Users />} />
+										<Route path='/users/:id' element={<User />} />
+									</Routes>
+								</>
+							)
+					}
+				</div>
 			</div>
 		</div>
 	);

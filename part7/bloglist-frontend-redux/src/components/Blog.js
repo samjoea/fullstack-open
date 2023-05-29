@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeBlogData, updateBlogLikes } from '../app/reducers/blogReducer';
+import { useNavigate } from 'react-router-dom';
 
 const Blog = ({ blog }) => {
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const userName = useSelector((state) => state.user?.username);
 	const [visible, setVisible] = useState(false);
@@ -26,6 +28,7 @@ const Blog = ({ blog }) => {
 	const handleRemove = () => {
 		const askUser = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
 		if (askUser) {
+			navigate('/');
 			dispatch(removeBlogData(blog.id));
 		}
 	};
@@ -52,7 +55,13 @@ const Blog = ({ blog }) => {
 					</div>
 					<div>{blog?.user?.name}</div>
 					<div style={hideRemoveButton}>
-						<button data-cy='blog-delete' style={removeStyle} onClick={handleRemove} >remove</button>
+						<button
+							data-cy='blog-delete'
+							style={removeStyle}
+							onClick={handleRemove}
+						>
+							remove
+						</button>
 					</div>
 				</div>
 			</div>

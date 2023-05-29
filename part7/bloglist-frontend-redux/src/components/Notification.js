@@ -13,21 +13,16 @@ const Notification = () => {
 
 	return display ? (
 		<div>
-			<br />
-			<div data-cy='notification-box' style={{
-				color: typeColor[type],
-				fontSize: '20px',
-				paddingTop: '8px',
-				paddingBottom: '8px',
-				paddingLeft: '10px',
-				border: `3px solid ${typeColor[type]}`,
-				borderRadius: '5px',
-				backgroundColor: 'lightgrey',
-			}}
+			<div
+				className='bg-gray-300 text-xl mx-auto text-center py-1'
+				data-cy='notification-box'
+				style={{
+					color: typeColor[type],
+					border: `2px solid ${typeColor[type]}`,
+				}}
 			>
 				{message}
 			</div>
-			<br />
 		</div>
 	) : null;
 };

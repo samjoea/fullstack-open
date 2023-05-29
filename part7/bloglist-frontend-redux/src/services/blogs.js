@@ -66,4 +66,20 @@ const removeBlog = async (id) => {
 	}
 };
 
-export { getAll, addNewBlog, updateBlog, removeBlog };
+const addComment = async ({ id, comment }) => {
+	try {
+		const response = await axios.post(`${baseUrl}/${id}/comments`, { comment });
+		return {
+			status: response?.status,
+			data: response?.data
+		};
+
+	} catch (error) {
+		return {
+			status: error?.response?.status,
+			data: error?.response?.data?.error
+		};
+	}
+};
+
+export { getAll, addNewBlog, updateBlog, removeBlog, addComment };

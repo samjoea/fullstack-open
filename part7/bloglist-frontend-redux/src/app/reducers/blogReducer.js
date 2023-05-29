@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addNewBlog, getAll, removeBlog, updateBlog } from '../../services/blogs';
 import { displayNotification } from './notificationReducer';
+import { addComment } from '../../services/blogs';
 
 const blogSlice = createSlice({
 	name: 'blogs',
@@ -85,6 +86,24 @@ export const removeBlogData = (id) => {
 				type: 'error'
 			}));
 
+		}
+	};
+};
+
+export const addComments = ({ id, comment }) => {
+	return async (dispatch) => {
+		const response = await addComment({ id, comment });
+		if (response.status === 201) {
+			dispatch(blogUpdate(response.data));
+			dispatch(displayNotification({
+				message: 'Comment Added',
+				type: 'success'
+			}));
+		} else {
+			dispatch(displayNotification({
+				message: response.data,
+				type: 'error'
+			}));
 		}
 	};
 };

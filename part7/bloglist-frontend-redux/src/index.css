@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+   .btn {
+      @apply border-purple-900 rounded-md px-3 py-2 my-4 capitalize text-center text-purple-900 font-bold  hover:bg-purple-900 hover:text-white transition ease-linear duration-300 delay-100;
+   }
+   .input {
+      @apply flex-[0.8] pl-3 py-2 border border-gray-400 rounded-md outline-2 focus:outline-none focus:border-purple-900 focus:ring-1 focus:ring-purple-600 ;
+   }
+}
